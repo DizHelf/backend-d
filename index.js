@@ -5,7 +5,7 @@ import {createPostValidations} from "./validations/post.js";
 import checkAuth from "./utils/checkAuth.js";
 import checkErrors from "./utils/checkErrors.js";
 import { login, register, getMe } from "./controllers/UserControllers.js"
-import { create } from "./controllers/PostControllers.js"
+import { create, getAll, getOne, remove, update } from "./controllers/PostControllers.js"
 
 mongoose
     .connect("mongodb+srv://admin:wwwwww@diplom.zw5kmps.mongodb.net/blog")
@@ -13,6 +13,7 @@ mongoose
     .catch((err) => console.log("bd error", err))
 
 const app = express();
+
 app.use(express.json())
 
 
@@ -20,11 +21,10 @@ app.post("/auth/login", loginValidations, checkErrors, login)
 app.post("/auth/register", registerValidations, checkErrors, register)
 app.get("/auth/me", checkAuth, getMe)
 
-// app.get("/posts", getAll)
-// app.get("/posts/:id", getOne)
-// app.delete("/posts", remove)
-// app.patch("/posts", update)
-
+app.get("/posts", getAll)
+app.get("/posts/:id", getOne)
+app.delete("/posts/:id", checkAuth, remove)
+app.patch("/posts/:id",checkAuth, createPostValidations, checkErrors, update)
 app.post("/posts", checkAuth, createPostValidations, checkErrors, create)
 
 
